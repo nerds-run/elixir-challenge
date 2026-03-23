@@ -1,0 +1,20 @@
+# Build artifacts
+/_build/
+/deps/
+/data.db
+/data.db-*
+erl_crash.dump
+
+# Generated files
+*.beam
+*.ez
+
+# Editor
+.elixir_ls/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

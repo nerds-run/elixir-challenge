@@ -1,0 +1,90 @@
+<project_specification>
+  <project_name>Items API</project_name>
+
+  <overview>
+    A minimal JSON REST API for managing items. SQLite storage. No authentication.
+    Three resources, four endpoints. This is intentionally trivial — the point is
+    to have a fully deterministic, scoreable output.
+  </overview>
+
+  <technology_stack>
+    <language>Elixir</language>
+    <framework>Plug + Bandit (no Phoenix)</framework>
+    <database>SQLite via Ecto + ecto_sqlite3</database>
+    <build_commands>
+      <deps>mix deps.get</deps>
+      <build>mix compile</build>
+      <run>mix run --no-halt</run>
+      <test>mix test</test>
+    </build_commands>
+  </technology_stack>
+
+  <core_features>
+    <stage_0 name="Project Setup">
+      <description>Initialize Mix project with dependencies and application supervision tree</description>
+      <priority>critical</priority>
+      <depends_on>none</depends_on>
+      <features>
+        - Create Mix project with mix.exs
+        - Add dependencies: plug, bandit, ecto, ecto_sqlite3, jason
+        - Create Application module with supervision tree starting Repo and Bandit
+        - Create Ecto Repo module configured for SQLite at ./data.db
+        - Auto-migrate on application startup (create table if not exists)
+        - Listen on PORT env var, default 4000
+      </features>
+      <validation>mix deps.get succeeds, mix compile succeeds, mix run --no-halt starts and listens on configured port</validation>
+    </stage_0>
+
+    <stage_1 name="Schema and Database">
+      <description>Create Ecto schema and migration for items table</description>
+      <priority>critical</priority>
+      <depends_on>stage_0</depends_on>
+      <features>
+        - Create Item schema: id (integer, auto), name (string, required), description (string, default ""), inserted_at (utc_datetime)
+        - Create migration for items table
+        - Run migration automatically on app startup
+      </features>
+      <validation>Items table exists in data.db after startup</validation>
+    </stage_1>
+
+    <stage_2 name="CRUD Endpoints">
+      <description>Implement all API endpoints using Plug.Router</description>
+      <priority>critical</priority>
+      <depends_on>stage_1</depends_on>
+      <features>
+        - GET /health returns {"status": "ok"} with 200
+        - GET /items returns {"items": [...]} with 200 (empty array when no items)
+        - POST /items creates item, returns created item with 201
+        - POST /items validates name is required, returns {"error": "name is required"} with 400 if missing
+        - POST /items defaults description to "" if omitted
+        - GET /items/:id returns item with 200, or {"error": "item not found"} with 404
+        - DELETE /items/:id returns 204 with no body, or {"error": "item not found"} with 404
+        - All responses have Content-Type: application/json
+      </features>
+      <validation>All endpoints return correct status codes, JSON bodies, and headers</validation>
+    </stage_2>
+  </core_features>
+
+  <database_schema>
+    <tables>
+      <items>
+        - id integer primary key autoincrement
+        - name string not null
+        - description string not null default ""
+        - inserted_at utc_datetime
+      </items>
+    </tables>
+  </database_schema>
+
+  <api_endpoints>
+    <health>
+      - GET /health → 200 {"status": "ok"}
+    </health>
+    <items>
+      - GET /items → 200 {"items": [...]}
+      - POST /items → 201 {"id": N, "name": "...", "description": "...", "inserted_at": "..."}
+      - GET /items/:id → 200 {"id": N, ...} or 404 {"error": "item not found"}
+      - DELETE /items/:id → 204 (no body) or 404 {"error": "item not found"}
+    </items>
+  </api_endpoints>
+</project_specification>
