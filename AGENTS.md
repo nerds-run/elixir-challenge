@@ -1,12 +1,9 @@
 # Project: Items API
 
 ## GitHub Repository
-- **Owner**: UNKNOWN
-- **Repo**: UNKNOWN
-- **Full**: UNKNOWN
-
-> **ACTION REQUIRED**: GitHub repository information could not be auto-detected.
-> A human must fill in the repository details.
+- **Owner**: nerds-run
+- **Repo**: elixir-challenge
+- **Full**: nerds-run/elixir-challenge
 
 ## Linear
 - **Initiative ID**: ba6a04d0-644d-4488-b3f3-a2495de19706
