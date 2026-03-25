@@ -4,7 +4,10 @@ defmodule ItemsApi.Repo do
     adapter: Ecto.Adapters.SQLite3
 
   def init(_type, config) do
-    config = Keyword.put(config, :database, "./data.db")
-    {:ok, config}
+    database =
+      System.get_env("DATABASE_PATH") ||
+        Keyword.get(config, :database, "./data.db")
+
+    {:ok, Keyword.put(config, :database, database)}
   end
 end
