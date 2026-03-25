@@ -12,8 +12,7 @@ defmodule ItemsApi.RepoTest do
     end
 
     test "uses SQLite3 adapter" do
-      config = ItemsApi.Repo.config()
-      assert config[:adapter] == Ecto.Adapters.SQLite3
+      assert ItemsApi.Repo.__adapter__() == Ecto.Adapters.SQLite3
     end
 
     test "has otp_app set to :items_api" do
