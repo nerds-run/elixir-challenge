@@ -3,6 +3,8 @@
 /deps/
 /data.db
 /data.db-*
+/test_data.db
+/test_data.db-*
 erl_crash.dump
 
 # Generated files
