@@ -76,10 +76,7 @@ defmodule ItemsApi.Router do
 
           item ->
             {:ok, _} = ItemsApi.Repo.delete(item)
-
-            conn
-            |> Plug.Conn.put_resp_header("content-type", "application/json")
-            |> Plug.Conn.send_resp(204, "")
+            send_response(conn, 204, "")
         end
 
       _ ->
@@ -97,5 +94,11 @@ defmodule ItemsApi.Router do
     conn
     |> Plug.Conn.put_resp_header("content-type", "application/json")
     |> Plug.Conn.send_resp(status, json)
+  end
+
+  defp send_response(conn, status, body) do
+    conn
+    |> Plug.Conn.put_resp_header("content-type", "application/json")
+    |> Plug.Conn.send_resp(status, body)
   end
 end
