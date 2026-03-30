@@ -169,6 +169,23 @@ defmodule ItemsApi.RouterTest do
       not_found = json_conn(:get, "/items/99999") |> call()
       assert Plug.Conn.get_resp_header(not_found, "content-type") == ["application/json"]
     end
+
+    test "DELETE responses include content-type header" do
+      {:ok, item} =
+        ItemsApi.Repo.insert(
+          ItemsApi.Item.changeset(%ItemsApi.Item{}, %{"name" => "Test Delete"})
+        )
+
+      # Successful delete (204) has content-type
+      conn = json_conn(:delete, "/items/#{item.id}") |> call()
+      assert conn.status == 204
+      assert Plug.Conn.get_resp_header(conn, "content-type") == ["application/json"]
+
+      # Not found (404) has content-type
+      conn = json_conn(:delete, "/items/99999") |> call()
+      assert conn.status == 404
+      assert Plug.Conn.get_resp_header(conn, "content-type") == ["application/json"]
+    end
   end
 
   describe "unknown routes" do
